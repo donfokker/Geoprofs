@@ -1,42 +1,45 @@
-﻿using GeoProfs.Data;
-using GeoProfs.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using GeoProfs.Data;
+using GeoProfs.Models;
 
-namespace GeoProfs.Pages.Students;
-
-public class CreateModel : PageModel
+namespace GeoProfs.Pages.Students
 {
-    private readonly SchoolContext _context;
-
-    public CreateModel(SchoolContext context)
+    public class CreateModel : PageModel
     {
-        _context = context;
-    }
+        private readonly GeoProfs.Data.SchoolContext _context;
 
-    public IActionResult OnGet()
-    {
-        return Page();
-    }
-
-    [BindProperty]
-    public Student Student { get; set; }
-
-    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-    public async Task<IActionResult> OnPostAsync()
-    {
-        var emptyStudent = new Student();
-
-        if (await TryUpdateModelAsync<Student>(
-            emptyStudent,
-            "student",   // Prefix for form value.
-            s => s.FirstMidName, s => s.LastName, s => s.EnrollmentDate))
+        public CreateModel(GeoProfs.Data.SchoolContext context)
         {
-            _context.Students.Add(emptyStudent);
-            await _context.SaveChangesAsync();
-            return RedirectToPage("./Index");
+            _context = context;
         }
 
-        return Page();
+        public IActionResult OnGet()
+        {
+            Student = new Student { EnrollmentDate = DateTime.Now, FirstMidName = "Joe", LastName = "Smith" };
+            return Page();
+        }
+
+        [BindProperty]
+        public Student Student { get; set; }
+
+        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            _context.Students.Add(Student);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("./Index");
+        }
     }
 }

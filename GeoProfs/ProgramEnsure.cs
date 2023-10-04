@@ -1,4 +1,6 @@
-//#if NEVER
+#if NEVER   // This is just a snapshot of
+   context.Database.EnsureCreated();
+// DbInitializer.Initialize(context);
 #if !SQLiteVersion
 #region snippet_sx_all
 #region snippet_sx_filter
@@ -29,16 +31,14 @@ else
 }
 #endregion
 
-#region snippet_ensure
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
     var context = services.GetRequiredService<SchoolContext>();
     context.Database.EnsureCreated();
-    DbInitializer.Initialize(context);
+    // DbInitializer.Initialize(context);
 }
-#endregion
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -87,7 +87,7 @@ using (var scope = app.Services.CreateScope())
 
     var context = services.GetRequiredService<SchoolContext>();
     context.Database.EnsureCreated();
-    DbInitializer.Initialize(context);
+    // DbInitializer.Initialize(context);
 }
 
 app.UseHttpsRedirection();
@@ -102,4 +102,4 @@ app.MapRazorPages();
 app.Run();
 #endregion
 #endif
-//#endif
+#endif
